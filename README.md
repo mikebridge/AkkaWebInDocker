@@ -13,7 +13,7 @@ the Console app via Akka.Remote. The EchoConsole app has a single EchoActor.
 
 You can build and run both processes without docker from Visual Studio 2017 using `Debug -> Start Debugging`.  
 
-## Build - Linux/Mac/Windows & Docker
+## Build - Linux/Mac/Windows Command Line & Docker
 
 _Prerequisites:_
 
