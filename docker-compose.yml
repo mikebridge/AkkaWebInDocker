@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+
+  api:
+    container_name: api
+    restart: always
+    image: api
+    build: ./src/Web
+    environment:
+      - ECHO_HOST=echo
+      - ECHO_PORT=5001
+    depends_on:
+      - echo
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+
+  echo:
+    container_name: echo_service
+    build: ./src/EchoConsoleApp
+    restart: always
+    environment:
+      - ECHO_HOST=echo
+    ports:
+      - "5002:5002"
+
