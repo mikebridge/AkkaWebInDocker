@@ -1,0 +1,99 @@
+.DS_Store
+bin/
+obj/
+min/
+*.psess
+*.vspx
+*.TMP
+tmp/
+
+*.Resharper
+*.user
+*.suo
+*.tss
+.vs/
+*~
+
+#**/wwwroot
+
+**/publish
+
+#!**/wwwroot/web.config
+**/node_modules
+npm-debug.log
+**/bower_components
+**/dist
+**/build
+**/typings
+
+# Visual Studio
+.vs/restore.dg
+
+NDependOut/
+TestResults/
+TestResult.xml
+*.VisualState.xml
+CodeCoverage/
+*.orig
+*.msi
+*.exe
+!NuGet.exe
+!NuGet.targets
+*.vdproj
+*~HEAD
+out.txt
+._*
+
+!tools/**
+
+# IDEA
+**/.idea/
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# Sensitive or high-churn files:
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.xml
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+
+# Gradle:
+.idea/**/gradle.xml
+.idea/**/libraries
+
+.listen_test
+*codekit-config.json
+
+#nuget 
+#.nuget/
+#!NuGet.exe
+
+packages/
+EF/
+*.stackdump
+*.favdoc
+node_modules
+npm-debug.log
+yarn-error.log
+
+# TEMP
+*.bak
+
+# VS Code
+.vscode/launch.json
+.vscode
+.vscode/*
+
+# Python Virtual Environment
+venv/*
+
+# track migrations file
+**/last_migration.txt
+
+/src/Web/.env
