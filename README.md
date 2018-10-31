@@ -9,11 +9,18 @@ the Console app via Akka.Remote. The EchoConsole app has a single EchoActor.
 
 - currently the hosts, ports and environment variables are not configured in Docker
 
-## Build - Visual Studio
+## Build - Visual Studio w/o Docker
 
-You can build and run this without docker from Visual Studio. 
+You can build and run both processes without docker from Visual Studio 2017 using `Debug -> Start Debugging`.  
 
-From the command line, you can run this in docker using Linux containers:
+## Build - Linux/Mac/Windows & Docker
+
+_Prerequisites:_
+
+- [.NET Core sdk](https://www.microsoft.com/net/download) 
+- [Docker](https://docs.docker.com/)
+
+You can build the app from the command line, build the docker containers from the published source, then launch the two processes together:
 
 ```powershell
 > dotnet build
@@ -21,8 +28,8 @@ From the command line, you can run this in docker using Linux containers:
 > docker-compose up -build
 ```
 
-You should then be able to send a GET request to [http://localhost:3000/api/echo/test](http://localhost:3000/api/echo/test).  Right now the EchoActor does nothing but write
-to the debug console.
+If this worked correctly, you should then be able to send a GET request to [http://localhost:3000/api/echo/test](http://localhost:3000/api/echo/test).  Right now 
+the EchoActor does nothing but write to the debug console.
 
 ## Notes
 
