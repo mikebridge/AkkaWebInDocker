@@ -10,7 +10,7 @@ services:
     environment:
       - ECHO_PORT=5002
       - ECHO_HOST=echo
-      - API_PUBLIC_HOST=api
+      - API_EXTERNAL_HOST=api
       - ASPNETCORE_URLS=http://0.0.0.0:5000
     depends_on:
       - echo
@@ -23,7 +23,7 @@ services:
     build: ./src/EchoConsoleApp
     restart: always
     environment:
-      - ECHO_PUBLIC_HOST=echo
+      - ECHO_EXTERNAL_HOST=echo
     ports:
       - "5002:5002"
 

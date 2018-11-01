@@ -12,18 +12,20 @@ namespace Web
     public class EchoActorSystem: IEchoActorSystem, IDisposable
     {
         private readonly ActorSystem _actorSystem;
-        private readonly string _remoteHost;
-        private readonly int _remotePort;
+        private readonly HostAndPort _remoteHost;
 
-        private EchoActorSystem(ActorSystem actorSystem, string remoteHost, int remotePort)
+        private EchoActorSystem(ActorSystem actorSystem, HostAndPort remoteHost)
         {
             _actorSystem = actorSystem;
             _remoteHost = remoteHost;
-            _remotePort = remotePort;
             
         }
 
-        public static EchoActorSystem Create(string publicHostName, int publicPort, string remoteHost, int remotePort)
+        //public static EchoActorSystem Create(string publicHostName, int publicPort, string remoteHost, int remotePort)
+        public static EchoActorSystem Create(
+            HostAndPort externalHost, 
+            HostAndPort internalHost,
+            HostAndPort remoteHost)
         {            
 
             const string hostName = "localhost"; // listen on this locally
@@ -37,10 +39,10 @@ namespace Web
     remote {
         outbound-max-restarts = 1
         dot-netty.tcp {
-            bind-port = " + localPort + @" # internal (bind) port
-            bind-hostname = " + hostName + @" # internal (bind) hostname
-            hostname = " + publicHostName + @" # external (logical) hostname
-            port = " + publicPort + @" # external (logical) port
+            bind-hostname = " + internalHost.Host + @" # internal (bind) hostname
+            bind-port = " + internalHost.Port + @" # internal (bind) port            
+            hostname = " + externalHost.Host + @" # external (logical) hostname
+            port = " + externalHost.Port + @" # external (logical) port
         }
     }
 }";
@@ -49,13 +51,12 @@ namespace Web
             var akkaConfig = Akka.Configuration.ConfigurationFactory.ParseString(config);
 
             var actorSystem = ActorSystem.Create("EchoActorSystemClient", akkaConfig);
-            return new EchoActorSystem(actorSystem, remoteHost, remotePort);
+            return new EchoActorSystem(actorSystem, remoteHost);
         }
         
         public Task Send(string msg)
         {            
-            var actorPath = "akka.tcp://EchoConsoleApp@" + _remoteHost+
-                            @":" + _remotePort + "/user/EchoActor";
+            var actorPath = $"akka.tcp://EchoConsoleApp@{_remoteHost.Host}:{_remoteHost.Port}/user/EchoActor";
             Console.WriteLine("Connecting to " + actorPath);
             var actor = _actorSystem.ActorSelection(actorPath);
             actor.Tell(new EchoMessage(msg));
@@ -66,6 +67,7 @@ namespace Web
         {
             _actorSystem.Terminate().Wait();
         }
+
 
     }
 }

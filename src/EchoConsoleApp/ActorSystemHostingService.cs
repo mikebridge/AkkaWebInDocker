@@ -14,21 +14,10 @@ namespace EchoConsoleApp
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            // TODO: Get this from the environment
-            // this will be localhost in dev, the docker container name in docker, and the public api in production
-
-            var publicHostName = Environment.GetEnvironmentVariable("ECHO_PUBLIC_HOST") ?? "localhost";
-            var hostName = Environment.GetEnvironmentVariable("ECHO_HOST") ?? "localhost";
-            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable("ECHO_PORT"), out var localport);
-            localport = portSuccess ? localport : 5002;
-            //var remoteHost = 
-
-            //var publicHostname = "echo";
-            //var publicHostname = "localhost";
-            var hoconConfig = HoconConfig(publicHostName, hostName, localport);
+            var hoconConfig = HoconConfig();
             Console.WriteLine(hoconConfig);
+
             var config = ConfigurationFactory.ParseString(hoconConfig);
-            Console.WriteLine("Initializing...");
             _system = ActorSystem.Create("EchoConsoleApp", config);
             _system.ActorOf(EchoActor.Props(), "EchoActor");
 
@@ -40,22 +29,16 @@ namespace EchoConsoleApp
             return _system.Terminate();
         }
 
-//        public void Dispose()
-//        {
-//            //throw new NotImplementedException();
-//        }
-
-        private static string HoconConfig(String publicHostname, String hostname, int port)
+        private static string HoconConfig()
         {
+            var externalHost = GetExternalHostName("localhost", 5002);
+            var internalHost = GetInternalHostName("localhost", 5002);
+
             // As per https://getakka.net/articles/remoting/transports.html,
-            // we are listening on all network interfaces (hostname=0.0.0.0)
-            // but we are telling remote systems to access us via publicHostname (public-hostname) variable.
-            // TODO: bring these in from the environment
-            //const string hostname = "0.0.0.0"; // this doesn't seem to work.
 
             Console.WriteLine($"ActorSystemHostingSerice CONFIG");
-            Console.WriteLine($"         bind to: {hostname}:{port}");
-            Console.WriteLine($" public-hostname: {publicHostname}:{port}");
+            Console.WriteLine($"         bind to: {internalHost}");
+            Console.WriteLine($" public-hostname: {externalHost}");
             return @"akka {  
                 stdout-loglevel = DEBUG
                 loglevel = DEBUG
@@ -65,15 +48,35 @@ namespace EchoConsoleApp
                 }
                 remote {
                     dot-netty.tcp {
-                        bind-port = " + port + @" 
-                        bind-hostname = " + hostname + @" 
-                        hostname = " + publicHostname + @"
-                        port = " + port + @"
+                        bind-hostname = " + internalHost.Host + @"
+                        bind-port = " + internalHost.Port + @"                         
+                        hostname = " + externalHost.Host + @"
+                        port = " + externalHost.Port + @"
                     }
                 }
             }";
             //                        public-hostname = " + publicHostname + @"
         }
+
+
+        private static HostAndPort GetInternalHostName(string defaultHost, int defaultPort)
+        {
+            var internalHostName = Environment.GetEnvironmentVariable("ECHO_INTERNAL_HOST") ?? defaultHost;
+            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable("ECHO_PORT"), out var internalPort);
+            internalPort = portSuccess ? internalPort : defaultPort;
+            var internalHost = new HostAndPort(internalHostName, internalPort);
+            return internalHost;
+        }
+
+        private static HostAndPort GetExternalHostName(string defaultHost, int defaultPort)
+        {
+            var externalHostName = Environment.GetEnvironmentVariable("ECHO_EXTERNAL_HOST") ?? defaultHost;
+            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable("ECHO_EXTERNAL_PORT"), out var externalPort);
+            externalPort = portSuccess ? externalPort : defaultPort;
+            return new HostAndPort(externalHostName, externalPort);
+        }
+
+
 
     }
 }
