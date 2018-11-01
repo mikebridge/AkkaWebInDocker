@@ -28,7 +28,8 @@ namespace Web
 
             const string hostName = "localhost"; // listen on this locally
             const int localPort = 5001;
-
+            
+            // https://doc.akka.io/docs/akka/2.5.4/java/remoting.html#akka-behind-nat-or-in-a-docker-container
             var config = @"akka {  
     actor {
         provider = remote
@@ -36,17 +37,14 @@ namespace Web
     remote {
         outbound-max-restarts = 1
         dot-netty.tcp {
-            bind-port = " + localPort + @"
-            bind-hostname = " + hostName + @"
-            hostname = " + publicHostName + @"
-            port = " + publicPort + @"
+            bind-port = " + localPort + @" # internal (bind) port
+            bind-hostname = " + hostName + @" # internal (bind) hostname
+            hostname = " + publicHostName + @" # external (logical) hostname
+            port = " + publicPort + @" # external (logical) port
         }
     }
 }";
             //            public-hostname = " + publicHostname + @"
-            // bind-hostname = " + host + @" # internal (bind) hostname
-            // bind-port = " + port + @" # internal (bind) port
-
 
             var akkaConfig = Akka.Configuration.ConfigurationFactory.ParseString(config);
 
