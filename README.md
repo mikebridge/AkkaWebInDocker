@@ -5,10 +5,6 @@ Basic setup demo for Akka.Net in Docker.
 This is configured as two Linux containers, one running a Console app with an Akka.Net ActorSystem, and the other running WebApi.  The web api accesses
 the Console app via Akka.Remote. The EchoConsole app has a single EchoActor.
 
-*TODO: Finish the docker configuration*
-
-- currently the hosts, ports and environment variables are not configured in Docker
-
 ## Build - Visual Studio w/o Docker
 
 You can build and run both processes without docker from Visual Studio 2017 using `Debug -> Start Debugging`.  

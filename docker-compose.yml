@@ -8,8 +8,10 @@ services:
     image: api
     build: ./src/Web
     environment:
+      - ECHO_PORT=5002
       - ECHO_HOST=echo
-      - ECHO_PORT=5001
+      - API_PUBLIC_HOST=api
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
     depends_on:
       - echo
     ports:
@@ -17,11 +19,11 @@ services:
       - "5001:5001"
 
   echo:
-    container_name: echo_service
+    container_name: echo
     build: ./src/EchoConsoleApp
     restart: always
     environment:
-      - ECHO_HOST=echo
+      - ECHO_PUBLIC_HOST=echo
     ports:
       - "5002:5002"
 

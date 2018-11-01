@@ -32,5 +32,4 @@ EXPOSE 5002
 COPY $source .
 
 #ENV ASPNETCORE_ENVIRONMENT DockerDev
-
 ENTRYPOINT ["dotnet", "EchoConsoleApp.dll"]

@@ -6,6 +6,7 @@ FROM microsoft/aspnetcore-build
 ENV ACCEPT_EULA Y
 ENV ASPNETCORE_ENVIRONMENT DockerDev
 
+
 ARG source=./bin/Debug/netcoreapp2.0/publish
 
 WORKDIR /app

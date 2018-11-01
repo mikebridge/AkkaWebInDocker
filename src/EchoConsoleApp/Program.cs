@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -13,11 +13,15 @@ namespace EchoConsoleApp
             var environmentName = EnvironmentName.Development;
 
             var hostBuilder = new HostBuilder()
-                //                // Add configuration, logging, ...
+
                 .UseEnvironment(environmentName)
                 .ConfigureAppConfiguration((hostContext, configApp) =>
                 {
                     hostContext.HostingEnvironment.ApplicationName = "Echo";
+                })
+                .ConfigureHostConfiguration(configHost =>
+                {
+                    configHost.AddEnvironmentVariables();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {

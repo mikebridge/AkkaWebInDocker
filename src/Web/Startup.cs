@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,28 +14,41 @@ namespace Web
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+        
         }
 
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        // ReSharper disable once UnusedMember.Global
         public void ConfigureServices(IServiceCollection services)
         {
-            // TODO: pull in the hostnames from the environment
-            services.AddSingleton<IEchoActorSystem>(sp => EchoActorSystem.Create("localhost", "localhost", 5002));
+            services.AddSingleton<IEchoActorSystem>(sp => CreateEchoActorSystem());
             services.AddMvc();
+            
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // ReSharper disable once UnusedMember.Global
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseMvc();
 
         }
+
+        private static EchoActorSystem CreateEchoActorSystem()
+        {
+
+            var publicHost = Environment.GetEnvironmentVariable("API_PUBLIC_HOST") ?? "localhost";
+            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable("API_PORT"), out var publicPort);
+            publicPort = portSuccess ? publicPort : 5001;
+            var remoteHost = Environment.GetEnvironmentVariable("ECHO_HOST") ?? "localhost";
+            portSuccess = int.TryParse(Environment.GetEnvironmentVariable("ECHO_PORT"), out var remotePort);
+            remotePort = portSuccess ? remotePort : 5002;
+
+            return EchoActorSystem.Create(publicHost, publicPort, remoteHost, remotePort);
+        }
+
     }
 }

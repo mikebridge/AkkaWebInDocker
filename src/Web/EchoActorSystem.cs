@@ -23,11 +23,11 @@ namespace Web
             
         }
 
-        public static EchoActorSystem Create(string publicHostName, string remoteHost, int remotePort)
+        public static EchoActorSystem Create(string publicHostName, int publicPort, string remoteHost, int remotePort)
         {            
 
             const string hostName = "localhost"; // listen on this locally
-            const int port = 5001;
+            const int localPort = 5001;
 
             var config = @"akka {  
     actor {
@@ -36,10 +36,10 @@ namespace Web
     remote {
         outbound-max-restarts = 1
         dot-netty.tcp {
-            port = " + port + @" # external (logical) port
-            hostname = " + hostName + @" #external (logical) hostname
-            bind-hostname = " + publicHostName + @"
-            bind-port = " + port + @"
+            bind-port = " + localPort + @"
+            bind-hostname = " + hostName + @"
+            hostname = " + publicHostName + @"
+            port = " + publicPort + @"
         }
     }
 }";
