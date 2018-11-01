@@ -61,22 +61,25 @@ namespace EchoConsoleApp
 
         private static HostAndPort GetInternalHostName(string defaultHost, int defaultPort)
         {
-            var internalHostName = Environment.GetEnvironmentVariable("ECHO_INTERNAL_HOST") ?? defaultHost;
-            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable("ECHO_PORT"), out var internalPort);
-            internalPort = portSuccess ? internalPort : defaultPort;
-            var internalHost = new HostAndPort(internalHostName, internalPort);
-            return internalHost;
+            return GetHostAndPort(defaultHost, defaultPort, "ECHO_INTERNAL_HOST", "ECHO_INTERNAL_PORT");
         }
 
         private static HostAndPort GetExternalHostName(string defaultHost, int defaultPort)
         {
-            var externalHostName = Environment.GetEnvironmentVariable("ECHO_EXTERNAL_HOST") ?? defaultHost;
-            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable("ECHO_EXTERNAL_PORT"), out var externalPort);
-            externalPort = portSuccess ? externalPort : defaultPort;
-            return new HostAndPort(externalHostName, externalPort);
+            return GetHostAndPort(defaultHost, defaultPort, "ECHO_EXTERNAL_HOST", "ECHO_EXTERNAL_PORT");
         }
 
-
-
+        private static HostAndPort GetHostAndPort(
+            string defaultHost, 
+            int defaultPort, 
+            string hostVar, 
+            string portVar)
+        {
+            var internalHostName = Environment.GetEnvironmentVariable(hostVar) ?? defaultHost;
+            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable(portVar), out var internalPort);
+            internalPort = portSuccess ? internalPort : defaultPort;
+            var internalHost = new HostAndPort(internalHostName, internalPort);
+            return internalHost;
+        }
     }
 }

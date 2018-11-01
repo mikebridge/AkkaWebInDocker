@@ -39,46 +39,48 @@ namespace Web
 
         private static EchoActorSystem CreateEchoActorSystem()
         {
-            // TODO: Replace this
+            // This is where the echo akka system is
             var echoHost = GetEchoHostName("localhost", 5002);
+            
+            // What we bind to internally
             var internalHost = GetInternalHostName("localhost", 5001);
+            
+            // What we present ourselves to via NAT/Docker
             var externalHost = GetExternalHostName("localhost", 5001);
-
-//            var publicHost = Environment.GetEnvironmentVariable("API_EXTERNAL_HOST") ?? "localhost";
-//            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable("API_PORT"), out var publicPort);
-//            publicPort = portSuccess ? publicPort : 5001;
-//            var remoteHost = Environment.GetEnvironmentVariable("ECHO_HOST") ?? "localhost";
-//            portSuccess = int.TryParse(Environment.GetEnvironmentVariable("ECHO_PORT"), out var remotePort);
-//            remotePort = portSuccess ? remotePort : 5002;
 
             return EchoActorSystem.Create(externalHost, internalHost, echoHost);
         }
 
+        
+
         private static HostAndPort GetEchoHostName(string defaultHost, int defaultPort)
         {
-            var internalHostName = Environment.GetEnvironmentVariable("ECHO_HOST") ?? defaultHost;
-            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable("ECHO_PORT"), out var internalPort);
-            internalPort = portSuccess ? internalPort : defaultPort;
-            var internalHost = new HostAndPort(internalHostName, internalPort);
-            return internalHost;
+            return GetHostAndPort(defaultHost, defaultPort, "ECHO_HOST", "ECHO_PORT");
         }
 
         private static HostAndPort GetInternalHostName(string defaultHost, int defaultPort)
         {
-            var internalHostName = Environment.GetEnvironmentVariable("API_INTERNAL_HOST") ?? defaultHost;
-            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable("API_INTERNAL_PORT"), out var internalPort);
+            return GetHostAndPort(defaultHost, defaultPort, "API_INTERNAL_HOST", "API_INTERNAL_PORT");
+        }
+
+        private static HostAndPort GetExternalHostName(string defaultHost, int defaultPort)
+        {
+            return GetHostAndPort(defaultHost, defaultPort, "API_EXTERNAL_HOST", "API_EXTERNAL_PORT");
+        }
+
+        private static HostAndPort GetHostAndPort(
+            string defaultHost,
+            int defaultPort,
+            string hostVar,
+            string portVar)
+        {
+            var internalHostName = Environment.GetEnvironmentVariable(hostVar) ?? defaultHost;
+            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable(portVar), out var internalPort);
             internalPort = portSuccess ? internalPort : defaultPort;
             var internalHost = new HostAndPort(internalHostName, internalPort);
             return internalHost;
         }
 
-        private static HostAndPort GetExternalHostName(string defaultHost, int defaultPort)
-        {
-            var externalHostName = Environment.GetEnvironmentVariable("API_EXTERNAL_HOST") ?? defaultHost;
-            var portSuccess = int.TryParse(Environment.GetEnvironmentVariable("API_EXTERNAL_PORT"), out var externalPort);
-            externalPort = portSuccess ? externalPort : defaultPort;
-            return new HostAndPort(externalHostName, externalPort);
-        }
 
 
     }
